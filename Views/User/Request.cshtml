@@ -1,0 +1,41 @@
+﻿@model List<SelectListItem>
+@{
+    ViewBag.Title = "Request";
+}
+<head>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+</head>
+<h2>Request</h2>
+
+<div class="form-group">
+    <label>Product:</label>
+    @Html.DropDownList("ProductList", Model, new { @class = "form-control", id = "Product", selected = true })
+</div>
+
+<div class="form-group">
+    <label for="spinner">Quantity:</label>
+    <input id="Quantity" type="number" name="value" class="form-control">
+</div>
+<div class="form-group">
+    <button class="btn btn-info" id="add">&nbsp;&nbsp;&nbsp;Add&nbsp;&nbsp;&nbsp;</button>
+</div>
+
+<div class="form-group">
+    <button class="btn btn-info" id="remove">Remove</button>
+</div>
+
+<table  id="requestTable" data-configuration-name="RequestTable"></table>
+
+<div class="form-group">
+    @*<button class="btn btn-info" id="requestbtn">Request</button>*@
+    <input id="requestbtn" type="button" value="Request" class="btn btn-info" />
+</div>
+
+@section Scripts{
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+    <script src="//cdn.datatables.net/plug-ins/1.10.15/api/row().show().js"></script>
+    <script src="~/Views/User/DatatableRequest.js"></script>
+    <script src="~/Views/User/Request.js"></script>
+}
+
+
