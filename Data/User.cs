@@ -18,6 +18,7 @@ namespace TimeShield.Data
         public User()
         {
             this.Requests = new HashSet<Request>();
+            this.TrackRequests = new HashSet<TrackRequest>();
         }
     
         public int UserId { get; set; }
@@ -30,5 +31,7 @@ namespace TimeShield.Data
     
         [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
         public virtual ICollection<Request> Requests { get; set; }
+        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
+        public virtual ICollection<TrackRequest> TrackRequests { get; set; }
     }
 }

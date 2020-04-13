@@ -14,21 +14,15 @@ namespace TimeShield.Data
     
     public partial class Request
     {
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2214:DoNotCallOverridableMethodsInConstructors")]
-        public Request()
-        {
-            this.TrackRequests = new HashSet<TrackRequest>();
-        }
-    
         public int RequestId { get; set; }
         public int UserId { get; set; }
         public int ProductId { get; set; }
         public System.DateTime RequestTime { get; set; }
         public int Quantity { get; set; }
+        public int Approveflag { get; set; }
+        public string RequestGUID { get; set; }
     
         public virtual Product Product { get; set; }
         public virtual User User { get; set; }
-        [System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Usage", "CA2227:CollectionPropertiesShouldBeReadOnly")]
-        public virtual ICollection<TrackRequest> TrackRequests { get; set; }
     }
 }

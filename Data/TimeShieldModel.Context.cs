@@ -27,8 +27,8 @@ namespace TimeShield.Data
     
         public virtual DbSet<Product> Products { get; set; }
         public virtual DbSet<Request> Requests { get; set; }
-        public virtual DbSet<TrackRequest> TrackRequests { get; set; }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<database_firewall_rules> database_firewall_rules { get; set; }
+        public virtual DbSet<TrackRequest> TrackRequests { get; set; }
     }
 }

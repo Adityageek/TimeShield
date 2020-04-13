@@ -15,9 +15,10 @@ namespace TimeShield.Data
     public partial class TrackRequest
     {
         public int TrackingId { get; set; }
-        public int RequestId { get; set; }
+        public string RequestGUID { get; set; }
         public System.DateTime ApproveTime { get; set; }
+        public int UserId { get; set; }
     
-        public virtual Request Request { get; set; }
+        public virtual User User { get; set; }
     }
 }

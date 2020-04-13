@@ -1,0 +1,25 @@
+﻿
+@{
+    ViewBag.Title = "Approve Request";
+
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<head>
+    <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+</head>
+<h2>Approve Request</h2>
+
+<table id="approverequestTable"></table>
+<div class="form-group">
+    <input id="approveRequest" type="button" value="Approve" class="btn btn-info" />
+</div>
+
+<script>
+    var reqid = "@ViewBag.RequestId"
+     var guid=    '@Context.Request["RequestId"]'
+</script>
+<script src="~/Views/User/ApproveRequest.js"></script>
+
+
+

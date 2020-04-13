@@ -22,14 +22,17 @@
           <Property Name="ProductId" Type="int" Nullable="false" />
           <Property Name="RequestTime" Type="datetime" Nullable="false" />
           <Property Name="Quantity" Type="int" Nullable="false" />
+          <Property Name="Approveflag" Type="int" Nullable="false" />
+          <Property Name="RequestGUID" Type="varchar" MaxLength="100" Nullable="false" />
         </EntityType>
         <EntityType Name="TrackRequest">
           <Key>
             <PropertyRef Name="TrackingId" />
           </Key>
           <Property Name="TrackingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
-          <Property Name="RequestId" Type="int" Nullable="false" />
+          <Property Name="RequestGUID" Type="varchar" MaxLength="100" Nullable="false" />
           <Property Name="ApproveTime" Type="datetime" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Users">
           <Key>
@@ -61,6 +64,18 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
           <Property Name="create_date" Type="datetime" Nullable="false" />
           <Property Name="modify_date" Type="datetime" Nullable="false" />
         </EntityType>
+        <Association Name="FK__TrackRequ__UserI__5AEE82B9">
+          <End Role="Users" Type="Self.Users" Multiplicity="1" />
+          <End Role="TrackRequest" Type="Self.TrackRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Users">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="TrackRequest">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="fk_request_product">
           <End Role="Products" Type="Self.Products" Multiplicity="1" />
           <End Role="Requests" Type="Self.Requests" Multiplicity="*" />
@@ -85,18 +100,6 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_track_request_request">
-          <End Role="Requests" Type="Self.Requests" Multiplicity="1" />
-          <End Role="TrackRequest" Type="Self.TrackRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Requests">
-              <PropertyRef Name="RequestId" />
-            </Principal>
-            <Dependent Role="TrackRequest">
-              <PropertyRef Name="RequestId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="TimeShield_dbModelStoreContainer">
           <EntitySet Name="Products" EntityType="Self.Products" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Requests" EntityType="Self.Requests" Schema="dbo" store:Type="Tables" />
@@ -112,6 +115,10 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
     [database_firewall_rules].[modify_date] AS [modify_date]
     FROM [sys].[database_firewall_rules] AS [database_firewall_rules]</DefiningQuery>
           </EntitySet>
+          <AssociationSet Name="FK__TrackRequ__UserI__5AEE82B9" Association="Self.FK__TrackRequ__UserI__5AEE82B9">
+            <End Role="Users" EntitySet="Users" />
+            <End Role="TrackRequest" EntitySet="TrackRequest" />
+          </AssociationSet>
           <AssociationSet Name="fk_request_product" Association="Self.fk_request_product">
             <End Role="Products" EntitySet="Products" />
             <End Role="Requests" EntitySet="Requests" />
@@ -119,10 +126,6 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
           <AssociationSet Name="fk_request_user" Association="Self.fk_request_user">
             <End Role="Users" EntitySet="Users" />
             <End Role="Requests" EntitySet="Requests" />
-          </AssociationSet>
-          <AssociationSet Name="fk_track_request_request" Association="Self.fk_track_request_request">
-            <End Role="Requests" EntitySet="Requests" />
-            <End Role="TrackRequest" EntitySet="TrackRequest" />
           </AssociationSet>
         </EntityContainer>
       </Schema></edmx:StorageModels>
@@ -148,17 +151,9 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
           <Property Name="RequestTime" Type="DateTime" Nullable="false" Precision="3" />
           <NavigationProperty Name="Product" Relationship="Self.fk_request_product" FromRole="Requests" ToRole="Products" />
           <NavigationProperty Name="User" Relationship="Self.fk_request_user" FromRole="Requests" ToRole="Users" />
-          <NavigationProperty Name="TrackRequests" Relationship="Self.fk_track_request_request" FromRole="Requests" ToRole="TrackRequest" />
           <Property Name="Quantity" Type="Int32" Nullable="false" />
-        </EntityType>
-        <EntityType Name="TrackRequest">
-          <Key>
-            <PropertyRef Name="TrackingId" />
-          </Key>
-          <Property Name="TrackingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="RequestId" Type="Int32" Nullable="false" />
-          <Property Name="ApproveTime" Type="DateTime" Nullable="false" Precision="3" />
-          <NavigationProperty Name="Request" Relationship="Self.fk_track_request_request" FromRole="TrackRequest" ToRole="Requests" />
+          <Property Name="Approveflag" Type="Int32" Nullable="false" />
+          <Property Name="RequestGUID" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
         </EntityType>
         <EntityType Name="User">
           <Key>
@@ -172,6 +167,7 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
           <Property Name="Contact" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <Property Name="ProfileType" Type="String" MaxLength="20" FixedLength="false" Unicode="false" Nullable="false" />
           <NavigationProperty Name="Requests" Relationship="Self.fk_request_user" FromRole="Users" ToRole="Requests" />
+          <NavigationProperty Name="TrackRequests" Relationship="TimeShield_dbModel.FK__TrackRequ__UserI__5AEE82B9" FromRole="User" ToRole="TrackRequest" />
         </EntityType>
         <EntityType Name="database_firewall_rules">
           <Key>
@@ -213,22 +209,9 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <Association Name="fk_track_request_request">
-          <End Role="Requests" Type="Self.Request" Multiplicity="1" />
-          <End Role="TrackRequest" Type="Self.TrackRequest" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Requests">
-              <PropertyRef Name="RequestId" />
-            </Principal>
-            <Dependent Role="TrackRequest">
-              <PropertyRef Name="RequestId" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
         <EntityContainer Name="TimeShield_dbEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Products" EntityType="Self.Product" />
           <EntitySet Name="Requests" EntityType="Self.Request" />
-          <EntitySet Name="TrackRequests" EntityType="Self.TrackRequest" />
           <EntitySet Name="Users" EntityType="Self.User" />
           <EntitySet Name="database_firewall_rules" EntityType="Self.database_firewall_rules" />
           <AssociationSet Name="fk_request_product" Association="Self.fk_request_product">
@@ -239,11 +222,34 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
             <End Role="Users" EntitySet="Users" />
             <End Role="Requests" EntitySet="Requests" />
           </AssociationSet>
-          <AssociationSet Name="fk_track_request_request" Association="Self.fk_track_request_request">
-            <End Role="Requests" EntitySet="Requests" />
+          <EntitySet Name="TrackRequests" EntityType="TimeShield_dbModel.TrackRequest" />
+          <AssociationSet Name="FK__TrackRequ__UserI__5AEE82B9" Association="TimeShield_dbModel.FK__TrackRequ__UserI__5AEE82B9">
+            <End Role="User" EntitySet="Users" />
             <End Role="TrackRequest" EntitySet="TrackRequests" />
           </AssociationSet>
         </EntityContainer>
+        <EntityType Name="TrackRequest">
+          <Key>
+            <PropertyRef Name="TrackingId" />
+          </Key>
+          <Property Name="TrackingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RequestGUID" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ApproveTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <NavigationProperty Name="User" Relationship="TimeShield_dbModel.FK__TrackRequ__UserI__5AEE82B9" FromRole="TrackRequest" ToRole="User" />
+        </EntityType>
+        <Association Name="FK__TrackRequ__UserI__5AEE82B9">
+          <End Type="TimeShield_dbModel.User" Role="User" Multiplicity="1" />
+          <End Type="TimeShield_dbModel.TrackRequest" Role="TrackRequest" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="User">
+              <PropertyRef Name="UserId" />
+            </Principal>
+            <Dependent Role="TrackRequest">
+              <PropertyRef Name="UserId" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
       </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -262,20 +268,13 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
           <EntitySetMapping Name="Requests">
             <EntityTypeMapping TypeName="TimeShield_dbModel.Request">
               <MappingFragment StoreEntitySet="Requests">
+                <ScalarProperty Name="RequestGUID" ColumnName="RequestGUID" />
+                <ScalarProperty Name="Approveflag" ColumnName="Approveflag" />
                 <ScalarProperty Name="Quantity" ColumnName="Quantity" />
                 <ScalarProperty Name="RequestId" ColumnName="RequestId" />
                 <ScalarProperty Name="UserId" ColumnName="UserId" />
                 <ScalarProperty Name="ProductId" ColumnName="ProductId" />
                 <ScalarProperty Name="RequestTime" ColumnName="RequestTime" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="TrackRequests">
-            <EntityTypeMapping TypeName="TimeShield_dbModel.TrackRequest">
-              <MappingFragment StoreEntitySet="TrackRequest">
-                <ScalarProperty Name="TrackingId" ColumnName="TrackingId" />
-                <ScalarProperty Name="RequestId" ColumnName="RequestId" />
-                <ScalarProperty Name="ApproveTime" ColumnName="ApproveTime" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
@@ -301,6 +300,16 @@ warning 6002: The table/view 'TimeShield_db.sys.database_firewall_rules' does no
                 <ScalarProperty Name="end_ip_address" ColumnName="end_ip_address" />
                 <ScalarProperty Name="create_date" ColumnName="create_date" />
                 <ScalarProperty Name="modify_date" ColumnName="modify_date" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="TrackRequests">
+            <EntityTypeMapping TypeName="TimeShield_dbModel.TrackRequest">
+              <MappingFragment StoreEntitySet="TrackRequest">
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="ApproveTime" ColumnName="ApproveTime" />
+                <ScalarProperty Name="RequestGUID" ColumnName="RequestGUID" />
+                <ScalarProperty Name="TrackingId" ColumnName="TrackingId" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

@@ -1,0 +1,41 @@
+﻿
+@{
+    ViewBag.Title = "New Request";
+}
+    <head>
+        <link rel="stylesheet" type="text/css" href="//cdn.datatables.net/1.10.15/css/jquery.dataTables.css">
+    </head>
+<h2>New Request</h2>
+
+<table id="newRequest"></table>
+
+@*@section Scripts{*@
+
+    <script>
+        $(document).ready(function () {
+
+            const dataTable1= $('#newRequest').DataTable({
+                "ajax": {
+                    "url": "../User/GetNewRequest/",
+                    "dataSrc": ""
+                },
+
+                "columns": [
+                    
+                    {
+                        "title": "Request ID",
+                        "data": "Key",
+                        "render": function (data, type, full, meta) {
+                            return '<a href="/User/ApproveRequest?RequestId=' + data + '"  value= "' + data + '">"' + data + '"</a>'
+                        }},
+                {
+                        "title": "User Name",
+                        "data": "Value"
+                    }]
+            });
+        });
+    </script>
+    @*<script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>*@
+@*}*@
+
+

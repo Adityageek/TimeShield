@@ -1,11 +1,25 @@
 ﻿<!DOCTYPE html>
 <html>
 <head>
-    <meta charset="utf-8" />
+    
+   <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title - Time Shield</title>
     @Styles.Render("~/Content/css")
-    @Scripts.Render("~/bundles/modernizr")
+    <script src="~/Scripts/modernizr-2.8.3.js"></script>
+    <script src="~/Scripts/jquery-3.4.1.js"></script>
+    <script src="~/Scripts/bootstrap.js"></script>
+    <script src="~/Scripts/jquery.validate-vsdoc.js"></script>
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/1.10.15/js/jquery.dataTables.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/moment.js/2.8.4/moment.min.js"></script>
+    <script type="text/javascript" charset="utf8" src="//cdn.datatables.net/plug-ins/1.10.20/dataRender/datetime.js"></script>
+    <style>
+        body {
+            background-color: aliceblue;
+        }
+    </style>
 </head>
 <body>
     <div class="navbar navbar-inverse navbar-fixed-top">
@@ -16,15 +30,37 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Time Shield", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.Label("TimeShield", new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
+                @{
+                    var pageName = ViewContext.RouteData.Values["action"].ToString();
+                }
+                @if (pageName == "Login") { }
+                else {
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Login", "Login", "Account", new { area = "" }, new { @class = "navbar-brand" })</li>
-                    <li>@Html.ActionLink("Request", "Request", "User", new { area = "" }, new { @class = "navbar-brand" })</li>
-                    <li>@Html.ActionLink("Track", "Track", "User", new { area = "" }, new { @class = "navbar-brand" })</li>
+
+                    @*{
+            <li>@Html.ActionLink("Login", "Login", "Account", new { area = "" }, new { @class = "navbar-brand" })</li>
+        }*@
+
+                    @if (@HttpContext.Current.Session["ProfileType"].ToString() == "MO")
+                    {
+                        <li>@Html.ActionLink("Request", "RequestProduct", "User", new { area = "" }, new { @class = "navbar-brand" })</li>
+                        <li>@Html.ActionLink("Track Request", "TrackRequest", "User", new { area = "" }, new { @class = "navbar-brand" })</li>
+                        <li>@Html.ActionLink("Log Out", "LogOut", "Account", new { area = "" }, new { @class = "navbar-brand" })</li>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("New Request", "NewRequest", "User", new { area = "" }, new { @class = "navbar-brand" })</li>
+                        <li>@Html.ActionLink("Log Out", "LogOut", "Account", new { area = "" }, new { @class = "navbar-brand" })</li>
+                    }
+
+
                 </ul>
+                }
             </div>
+                
         </div>
     </div>
     <div class="container body-content">
@@ -34,9 +70,5 @@
             <p>&copy; @DateTime.Now.Year - Time Shield</p>
         </footer>
     </div>
-
-    @Scripts.Render("~/bundles/jquery")
-    @Scripts.Render("~/bundles/bootstrap")
-    @RenderSection("scripts", required: false)
 </body>
 </html>
