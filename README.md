@@ -16,7 +16,7 @@ To solve this problem our proposed solution is to create an application from whi
 ## Features:
 
 • Tracking System 
-• Alert Notification after fix time
+• Raise Request
 
 ## Features In Future:
 
